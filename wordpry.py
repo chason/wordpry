@@ -55,8 +55,16 @@ class WordPry(object):
             name = elem.attrib['id']
             if elem.attrib['class'] == 'active':
                 active = True
+            else:
+                active = False
 
-            plugin_list.append(Plugin(name=name, active=active))
+            # This is janky but all plugins I've seen conform to this schema
+            raw_version = elem.find_class('plugin-version-author-uri')[0].text
+            version = raw_version.lstrip('Version ').rstrip(' | By')
+
+            plugin_list.append(Plugin(name=name, active=active, version=version))
+
+        return plugin_list
 
     def install_plugin(self, plugin):
         """
